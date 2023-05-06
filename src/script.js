@@ -2,6 +2,10 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import gsap from 'gsap'
 
+import {Pane} from 'tweakpane';
+const pane = new Pane();
+
+
 /**
  * Base
  */
@@ -24,6 +28,84 @@ const mesh = new THREE.Mesh(
     material
 )
 scene.add(mesh)
+
+const folderMesh = pane.addFolder({
+    title: 'Mesh'
+})
+
+const folderPositionMesh = folderMesh.addFolder({
+    title: 'position',
+    expand: true,
+})
+
+folderPositionMesh.addInput(mesh.position, "x", {
+    label: "x",
+    min: -20,
+    max: 20,
+    step: 0.1
+})
+
+folderPositionMesh.addInput(mesh.position, "y", {
+    label: "y",
+    min: -20,
+    max: 20,
+    step: 0.1
+})
+
+folderPositionMesh.addInput(mesh.position, "z", {
+    label: "z",
+    min: -20,
+    max: 20,
+    step: 0.1
+})
+//============================
+
+const folderRotationMesh = folderMesh.addFolder({
+    title: 'position',
+    expand: true,
+})
+
+folderRotationMesh.addInput(mesh.rotation, "x", {
+    label: "x",
+    min: -20,
+    max: 20,
+    step: 0.1
+})
+
+folderRotationMesh.addInput(mesh.rotation, "y", {
+    label: "y",
+    min: -20,
+    max: 20,
+    step: 0.1
+})
+
+folderRotationMesh.addInput(mesh.rotation, "z", {
+    label: "z",
+    min: -20,
+    max: 20,
+    step: 0.1
+})
+
+folderMesh.addInput(mesh.material, "wireframe")
+folderMesh.addInput(mesh, "visible")
+
+const PARAMS = {
+    color: '#ff0000',
+    spin: () => {
+        gsap.to(mesh.rotation, { duration: 1, y: mesh.rotation.y + Math.PI * 2 })
+
+
+    }
+  };
+  folderMesh.addButton({
+    title: 'spin'
+}).on("click",PARAMS.spin)
+
+  folderMesh.addInput(PARAMS, "color").on("change",(e)=>{
+    material.color.set(new THREE.Color(e.value))
+})
+
+
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height,0.1,100)
@@ -89,8 +171,6 @@ window.addEventListener('dblclick', () =>
 })
 
 
-
-
 const tick = () =>
 {
     controls.update()
@@ -101,5 +181,6 @@ const tick = () =>
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
+
 
 tick()
